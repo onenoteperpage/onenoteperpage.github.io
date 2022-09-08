@@ -1,7 +1,6 @@
-_site
+_site/*
 .DS_Store
 *.swp
 .sass-cache
 *~
-_config.yml
 _posts_orig
