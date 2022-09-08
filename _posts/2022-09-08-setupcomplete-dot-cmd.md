@@ -5,7 +5,7 @@ author: danijel
 categories: [ sysprep ]
 tags: [red, yellow ]
 image: assets/images/image-2-1024x540.png
-description: "Loop `AutoComplete.cmd` until the PowerShell script it's executing is complete, then exit."
+description: "Loop AutoComplete.cmd until the PowerShell script it's executing is complete, then exit."
 featured: true
 hidden: false
 rating: 4.5
