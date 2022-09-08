@@ -4,4 +4,4 @@ _site
 .sass-cache
 *~
 _config.yml
-_posts/*
+_posts_orig
