@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Mediumish Template for Jekyll
+title: About OneNotePerPage
 permalink: /about
 comments: true
 ---
@@ -17,7 +17,7 @@ comments: true
 
 <h4>Questions or bug reports?</h4>
 
-<p>Head over to our <a href="https://github.com/wowthemesnet/mediumish-theme-jekyll">Github repository</a>!</p>
+<p>Head over to my <a href="https://github.com/onenoteperpage/onenoteperpage.github.io/">Github repository</a>!</p>
 
 </div>
 
