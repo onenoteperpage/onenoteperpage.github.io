@@ -4,7 +4,7 @@ title:  "complete:13: command not found: compdef"
 author: danijel
 categories: [ zsh ]
 tags: [red, yellow ]
-image: assets/images/image-2-1024x540.png
+image: assets/images/OIP.jfif
 description: "complete:13: command not found: compdef"
 featured: false
 hidden: false
