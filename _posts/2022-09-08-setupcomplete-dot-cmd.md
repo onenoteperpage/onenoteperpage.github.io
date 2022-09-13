@@ -4,7 +4,7 @@ title:  "autocomplete.cmd"
 author: danijel
 categories: [ sysprep ]
 tags: [red, yellow ]
-image: assets/images/image-2-1024x540.png
+image: assets/images/photo-1550063873-ab792950096b_.webp
 description: "Loop AutoComplete.cmd until the PowerShell script it's executing is complete, then exit."
 featured: true
 hidden: false
