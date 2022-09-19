@@ -4,7 +4,7 @@ title:  "slmgr Install OA3xOriginalProductKey"
 author: danijel
 categories: [ sysprep ]
 tags: [red, yellow ]
-image: assets/images/image-2-1024x540.png
+#image: assets/images/image-2-1024x540.png
 description: "Install product key from motherboard"
 featured: false
 hidden: false
