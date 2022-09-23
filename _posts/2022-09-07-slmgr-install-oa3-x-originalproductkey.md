@@ -1,13 +1,9 @@
 ---
 layout: post
 title:  "slmgr Install OA3xOriginalProductKey"
+date:  2022-09-07 00:00:00 +1000
 author: danijel
 categories: [ sysprep ]
-tags: [red, yellow ]
-image: assets/images/image-2-1024x540.png
-description: "Install product key from motherboard"
-featured: false
-hidden: false
 ---
 
 Install the original product key from the motherboard automatically. Can be scripted.

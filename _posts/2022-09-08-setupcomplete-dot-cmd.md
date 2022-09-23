@@ -1,14 +1,9 @@
 ---
 layout: post
 title:  "autocomplete.cmd"
+date: 2022-09-08 00:00:00 +1000
 author: danijel
 categories: [ sysprep ]
-tags: [red, yellow ]
-image: assets/images/image-2-1024x540.png
-description: "Loop AutoComplete.cmd until the PowerShell script it's executing is complete, then exit."
-featured: true
-hidden: false
-rating: 4.5
 ---
 
 Two files that can be used to run [PowerShell](https://docs.microsoft.com/en-us/powershell/) commands when Windows finishes installing/upgrading.
