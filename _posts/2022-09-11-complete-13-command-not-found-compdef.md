@@ -1,25 +1,21 @@
 ---
 layout: post
 title:  "complete:13: command not found: compdef"
+date:  2022-09-11 00:00:00 +1000
 author: danijel
 categories: [ zsh ]
-tags: [red, yellow ]
-image: assets/images/OIP.jfif
-description: "complete:13: command not found: compdef"
-featured: false
-hidden: false
 ---
 
 Loading [zsh]() each time on my Terminal produces this result:
 
-```zsh
+{% highlight bash %}
 complete:13: command not found: compdef
-```
+{% endhighlight %}
 
 To rememdy this, add the following lines in the `~/.zshrc` file:
 
-```zsh
+{% highlight bash %}
 # COMPDEF FIX
 autoload -Uz compinit
 compinit
-```
+{% endhighlight %}
