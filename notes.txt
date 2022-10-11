@@ -1,0 +1,5 @@
+Download METADATA file: https://sso-inlandrail-prod.ap.manhattan.one/inlandrail_prod/Shibboleth.sso/Metadata.xml
+Entity ID https://sso-inlandrail-prod.ap.manhattan.one/inlandrail_prod
+Assertion Consumer Service URL  https://sso-inlandrail-prod.ap.manhattan.one/inlandrail_prod/Shibboleth.sso/SAML2/POST
+Logout Url: https://sso-inlandrail-prod.ap.manhattan.one/inlandrail_prod/Shibboleth.sso/SLO/SOAP
+Application URL: https://sso-inlandrail-prod.ap.manhattan.one/inlandrail_prod/manhattan.html
