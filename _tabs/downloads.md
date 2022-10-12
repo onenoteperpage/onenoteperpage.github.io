@@ -1,7 +1,7 @@
 ---
 # the default layout is 'page'
 icon: fas fa-download
-order: 4
+order: 6
 ---
 
 - [OpenVPN Connect](/downloads/openvpn.html)\

@@ -5,6 +5,7 @@ date: 2022-01-01 11:00:00 +1000
 categories: [IdM]
 tags: [openvpn, vpn1, vpn2]
 mermaid: true
+comments: false
 ---
 OpenVPN QR Codes cannot be reset via GUI instead using OpenVPN CLI. Requiring an admin account, login to server via SSH to generate new QR code for end-user.
 
