@@ -1,7 +1,7 @@
 ---
 title: SFTP Servers
 author: danijel
-date: 2022-10-09 11:00:00 +1000
+date: 2022-10-10 11:00:00 +1000
 categories: [Reference]
 tags: [sftp, openvpn]
 mermaid: true

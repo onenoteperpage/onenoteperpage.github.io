@@ -164,3 +164,10 @@ function Test-Tcp
         $false;
     }
 }
+
+# 7-Zip
+$7zipPath = "$env:ProgramFiles\7-Zip\7z.exe"
+if (-not (Test-Path -Path $7zipPath -PathType Leaf)) {
+    throw "7 zip file '$7zipPath' not found"
+}
+Set-Alias 7za $7zipPath
