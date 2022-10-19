@@ -11,7 +11,7 @@ Selection of random notes and tidbits that would be usefule to keep in the back 
 
 ## Uniface
 - Uniface 10 is going to V36
-- Uniface 9 if the client stays on V36
+- Uniface 9 if the client stays on V35
 
 ## Hardware Stacks and Envs
 - V35 env can go on the V36 hardware stack
@@ -22,3 +22,11 @@ Access to the BGIS services. This requires the VPN configuration to be setup. Is
 | Name | Stack | VPN | Collection | IP Address |
 |:-----|:------|:----|:-----------|:-----------|
 | SYDA-LAB04 | REWSAPAC | OpenVPN 1 | Admin | 10.216.31.46 |
+
+
+## Manhattan Version
+
+| Uniface Version | Manhattan Version |
+|:----------------|:------------------|
+| 9.7 | v35-SP11 up to v35-SP15 |
+| 10.3 | ? |

@@ -443,7 +443,7 @@ foreach ($file in $files)
 - Log into portal and verify login passes
 - Remove the added lines to the `common.asn` file now that the testing is complete
 
-## Auto Patcher for Schema
+## Preparation for Auto Patcher
 
 ### Update Sql Connection String
 
@@ -463,7 +463,7 @@ $UROUTER2			ORA:syda-nprod-dbu|inlandrail_<env>|xxxxxxxxxxx
 
 ### Signature Files
 
-- The current `SIGS` directory is located in the current patch service pack directory
+- The `SIGS` directory is located in the current patch service pack directory
 - Open the path `C:\temp\v35-releases` and find the latest Service Pack _(9.7.35-SP15)_
 - Navigate to the `PATCHSOFTWARE\SIGS` sub-directory
 
@@ -481,4 +481,249 @@ Get-ChildItem -Path \\syda-n-fs\iwms\manhattan\xml\qgao_upg -Filter *.xml -File 
 Get-ChildItem -Path C:\temp\v35-releases\9.7.35-SP15\PATCHSOFTWARE\SIGS -Filter *.xml -File | ForEach-Object { Copy-Item -Path $_.FullName -Destination \\syda-n-fs\iwms\manhattan\xml\qgao_upg\ -Force -Confirm:$false }
 ```
 
-_stopping at 2:22:12_
+- Open the `01. IDF` shortcut as user _(do not use admin)_
+- Execute the command `/rma /imp *.xml` to import the XML files from the upgrade folder on FSX
+- Close the resulting window
+
+### Manii Files
+
+- The `Manii` directory is located in the current patch service pack directory
+- Open the path `C:\temp\v35-releases` and find the latest Service Pack _(9.7.35-SP15)_
+- Navigate to the `PATCHSOFTWARE\Manii` sub-directory
+
+```powershell
+C:\temp\v35-releases\9.7.35-SP15\PATCHSOFTWARE\Manii
+```
+
+- These files will need to go into `00. Manii` shortcut replacing any files that exist in the target path being overwritten _(average 20 files)_
+- **Note:** Needs to be run in the admin console
+
+```powershell
+# copy and replace all files recursively to target from source
+Copy-Item -Path C:\temp\v35-releases\9.7.35-SP15\PATCHSOFTWARE\Manii\ -Destination E:\manhattan\forms\manii_qgao_upg -Recurse -Force -Confirm:$false
+```
+
+## Auto Patcher
+
+### Loading Defaults
+
+- Open shortcut `01. Autopatcher` _(as an admin)_ and click on `Load Config` button
+- Navigate to the `QGAO_UPG` directory and select the `inlandrail_upg.patchconfig` file
+- Update the schema name _(Username)_ and Password in the middle section using the correct username and password for the environment
+- Rename the `Unique Area Name` at the top of the window
+- Click on `Validate Config` button to verify settings
+- Click on `Save Config` button as filename `inlandrail_sup.patchconfig` file in same directory
+
+### Execute the Row Counts SQL
+
+- Change directory to `E:\upgrade\inlandrail` in PowerShell prompt
+- Verify file `row_counts.sql` exists
+- Set the Sql environment variables
+
+```powershell
+# query and set sql connection string
+Get-SqlEnv -c2 inlandrail_sup -c1 syda-nprod-dbu | Set-SqlEnv
+
+# verify the connection string is valid
+Check-Env
+
+# drop into sql prompt
+sql
+```
+
+- From the sql prompt, import the file
+
+```sql
+SQL> @row_counts.sql
+```
+
+- Sql prompt will drop the connection
+- File remaining will be `upgrade_row_counts.txt` which should be renamed to identify the env and client it's related to
+
+```powershell
+Rename-Item -Path .\upgrade_row_counts.txt -NewName .\inlandrail_sup_pre-upgrade_row_counts.txt -Force
+```
+
+###  Apply Uniface Patch
+
+- Navigate back to the Uniface Patch tool
+- Set the `Patch Folder` to the first patch directory _(Service Pack directory)_ of `C:\temp\v35-releases\9.7.35-SP11`
+- Tab out of the field to update the patching tool
+- Click `Is this the first package` option
+- Click on `Apply Patch` button to bring up patching interface
+- Verify the `Area`, `Patch` and `DB` values are correct
+
+| Area | Patch | DB |
+|:-----|:------|:---|
+| INLANDRAIL_UPG | 9.7.35-SP11 | ORA |
+
+- Click on `Next` button a few times to ensure the patches apply
+- Select `Use VBS` and `Auto Step` after a few passes and click on `Next` button to auto-process
+- Everytime the patching stops on `README` function, click on `Next` button to continue
+- Close the Auto Patcher window and confirm to exit
+- Update the path to point to the next upgrade in the path _(SP11 becomes SP12)_ and tab out of field to update
+- Do not need to re-validate
+- Uncheck `Is this the first package` option
+- Click `Apply Patch` button
+- Loop through steps until complete
+  -  Select `Use VBS` and `Auto Step` after a few passes and click on `Next` button to auto-process
+  - Everytime the patching stops on `README` function, click on `Next` button to continue
+  - Close the Auto Patcher window and confirm to exit
+- Close the Autopatcher tool so it does not have a write-lock on any files to be updated in manii rebase
+
+## Rebase Manii
+
+### 9.7.35-SP15_Manii.7z
+
+- The purpose of rebase is to overwrite the Manii, not everything, but the files that we are targeting will be targeted by the provided 7zip file
+- Copy the file `9.7.35-SP15_Manii.7z` to `E:\manhattan\forms` directory
+- Rename the containing folder in the archive from `Manii` to `manii_qgao_upg`
+- Extract over the current directory and replace the files
+
+```powershell
+# copy the 7zip file to the E drive
+Copy-Item -Path C:\temp\v35-releases\9.7.35-SP15_Manii.7z -Destination E:\manhattan\forms\9.7.35-SP15_Manii.7z -Force -Confirm:$false
+
+# rename the folder in the archive
+7za rn E:\manhattan\forms\9.7.35-SP15_Manii.7z Manii manii_qgao_upg
+
+# extract contents over the top of the existing files/folders for manii 
+7za x E:\manhattan\forms\9.7.35-SP15_Manii.7z -oE:\manhattan\forms -aoa
+
+# remove the 7zip file we copied across, it wastes space
+Remove-Item -Path E:\manhattan\forms\9.7.35-SP15_Manii.7z -Force -Confirm:$false
+```
+
+### 9.7.35-SP15_XML.7z
+
+- The v35 release of XML files needs to be injected to the `08. XML` shortcut directory
+- Remove all files in the target directory first
+- Extract the contents of the 7zip file across
+
+```powershell
+# remove all XML files already in 08. XML
+Remove-Item -Path \\syda-n-fs\iwms\manhattan\xml\qgao_upg\*.xml -Force -Confirm:$false
+
+# export 7zip XML 
+7za x C:\temp\v35-releases\9.7.35-SP15_XML.7z -o\\syda-n-fs\iwms\manhattan\xml\qgao_upg -aoa
+```
+
+- Open the `01. IDF` shortcut as user _(do not use admin)_
+- Execute the command `/rma /imp *.xml` to import the XML files from the upgrade folder on FSX
+- Wait approximately 15-20 minutes
+- Close the resulting window
+- Once complete, run the command to generate the `client_usergrid.xml` file
+
+### Export Uniface 9 Source
+
+- **Note:** Rebase on SP14 on maii's is required first to complete _(previous step)_
+- Output file `client_usergrid.xml` is created in predefined `08. XML` folder, then copied to `C:\temp\Export Uniface 9 Source\client_usergrid.xml`
+- Open the `01. IDF` shortcut as user _(do not use admin)_
+- Execute the command `/rma /tst CSUTPCLIUGRID ` to export the client grid XML file
+- Resulting window will close on it's own
+- File can be found at `\\syda-n-fs\iwms\manhattan\xml\qgao_upg\client_usergrid.xml`
+
+### Create EDC Records
+
+- Open the `01. IDF` shortcut as user _(run as administrator)_
+- Execute the command `/rma /tst csutpcliedc` to generate the `EDC` content
+- Open the `00. Manii` shortcut and open the `edc` directory to verify the newly created files
+
+## Install V36 Base Form
+
+- Base Form is an internal name for a ZIP/7z archive with the version initial release
+- Find latest production manii ZIP file in `E:\manhattan\forms` directory with prefix `stcfg_prod_manii_` on file identified as `stcfg_prod_manii_2022-02-14.zip` in this instance
+- Expand the contents of the ZIP file into the `E:\manhattan\forms\manii_inlandrail_sup` directory with overwrite enabled
+- Copy the manii from `E:\manhattan\forms\manii_qgao_upg` into the `E:\manhattan\forms\manii_inlandrail_sup` directory with overwrite enabled
+
+```powershell
+# extract zip file and overwrite
+7za x E:\manhattan\forms\stcfg_prod_manii_2022-02-14.zip -oE:\manhattan\forms\manii_inlandrail_sup -aoa
+
+# copy from qgao_upg and overwrite
+Copy-Item -Path E:\manhattan\forms\manii_qgao_upg -Destination E:\manhattan\forms\manii_inlandrail_sup -Recurse -Force -Confirm:$false
+```
+
+### Test 01. IDF
+
+- Open the `01. IDF` shortcut for `inlandrail_sup` directory at `E:\manhattan\shortcuts\inlandrail_sup`
+- If error occures, rename the `.ini` file at `E:\manhattan\u103\uniface\adm\inlandrail_sup\inlandrail_uat.ini` to `inlandrail_sup.ini` and re-launch
+
+```powershell
+if (Test-Path -Path E:\manhattan\u103\uniface\adm\inlandrail_sup\inlandrail_uat.ini)
+{
+    Rename-Item -Path E:\manhattan\u103\uniface\adm\inlandrail_sup\inlandrail_uat.ini -NewName inlandrail_sup.ini -Force -Confirm:$false
+}
+```
+
+- Load the `.patchconfig` file `E:\manhattan\u103\uniface\adm\inlandrail_sup\others\inlandrail_uat.patchconfig` in Autopatcher
+- Change all references of `inlandrail_uat` to `inlandrail_sup` in all places, retaining case sensitivity
+- Update the schema name _(Username)_ and Password in the middle section using the correct username and password for the environment
+- Rename the `Unique Area Name` at the top of the window
+- Click on `Validate Config` button to verify settings
+- Click on `Save Config` button as filename `inlandrail_sup.patchconfig` file in `E:\manhattan\u103\uniface\adm\inlandrail_sup\others` directory
+- Select a patch folder _(without patching)_ to validate the `.patchconfig` is working
+- Paste value `C:\temp\9.7.36\36-BUILDS` into the `Patch Folder` path and tab out
+- Click on `Apply Patch` button to validate the Autopatcher is able to execute the pre-requisite tasks and validate all configuration elements
+- This verifies all the components required are valid/found
+
+## Setup Uniface 10 Source
+
+### v35-36 Upgrade (Drop Tables)
+
+- Navigate to `E:\upgrade\v35-36` directory
+- File to be executed is `drop_repository.txt` in `SqlTools` in `C:\tools\sqltools\SQLTools.exe`
+- Pop up windows may appear
+  - Encrypted data corrupt, click `OK` button
+  - Terminated snapshot, click `No` button
+  - Clear crash status, click `Yes` button
+- Click on `Connect` button _(power plug, first icon second row)_
+
+![Desktop View](/assets/img/sqltools_icons/connect.PNG){: width="36" height="35" }
+_SQL Tools Connect_
+
+- Populate the connection window with the connection details
+- Click `Test` button to validate
+
+ ![Desktop View](/assets/img/sqltools_icons/connection_window.png){: width="733" height="406" }
+
+| Tag | User | Password | Bypass tsnames.ora | Host | TCP Port | SID |
+|:----|:-----|:---------|:-------------------|:-----|:---------|:----|
+| inlandrail_sup | inlandrail_sup | xxxxxxxxx | Ticked | syda-nprod-dbu | 1521 | ORCL |
+
+- Once validated, click `Save` button
+- Click `Connect` button
+- Open the `drop_repository.txt` file from `E:\upgrade\v35-36` directory
+- Click on `Execute Script` button in tool bar
+
+![Desktop View](/assets/img/sqltools_icons/execute_script.PNG){: width="29" height="31" }
+_SQL Tools Execute Script_
+
+### v35-v36 Upgrade (Create Tables)
+
+- In SQLTools open the `umeta_ora_dict_createtable2.txt` file from `E:\upgrade\v35-36` directory
+- Click on `Execute Script` button in tool bar
+- Click on `Disconnect` button in tool bar to commit changes and disconnect from server
+
+![Desktop View](/assets/img/sqltools_icons/disconnect.PNG){: width="29 height="29" }
+
+### Import XML
+
+- Verify the path on the `01. IDF` shortcut is pointing to the right set of folders
+  - `E:\manhattan\u103\common\bin\idf.exe /rma /asn=E:\manhattan\u103\uniface\adm\inlandrail_sup\idf.asm /ini=E:\manhattan\u103\uniface\adm\inlandrail_sup\inlandrail_sup.ini ?`
+  - Re-create the shortcuts if they are incorrectly pointing to targets _(see steps above)_
+- Open the `01. IDF` shortcut as user _(do not use admin)_
+- Execute the command `/imp imp E:\upgrade\v35-v36\upgrade_exports\umeta.xml` to import the umeta XML file
+- Close the resulting window
+
+### Overwrite v36 edc with v35
+
+- Copy the contents of the v35 edc directory over top of the v36 edc directory
+- This takes some time to process
+- _In video at 4hr 40min, John mentioned this is not required?_
+
+```powershell
+Copy-Item -Path E:\manhattan\forms\manii_inlandrail_upg\edc -Destination E:\manhattan\forms\manii_inlandrail_sup\edc -Recurse -Force -Confirm:$false
+```
+
+Video stopped at 4hr 40min to sleep
