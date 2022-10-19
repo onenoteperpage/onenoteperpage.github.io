@@ -2,8 +2,8 @@
 title: Init Profile Setup
 author: danijel
 date: 2022-10-11 11:00:00 +1000
-categories: [Category]
-tags: [lower, case, tags]
+categories: [Reference, Tools]
+tags: [powershell, profile, tools, cli]
 mermaid: true
 ---
 
