@@ -84,7 +84,9 @@ $env:tgt_schema='inlandrail_sup'
 $env:user_dmp=''
 ```
 
-**Note:** Import into UAT, being used as an upgrade schema, upgrade shortcuts already created for QGAO. Being used as an upgrade environment. Run the autopatcher. Upgrade from SP11 to SP15, do the migration bits. Then the schema is already sitting there. Then we do the v36 build, GA, SP 1, 2 and 3. Technically we can make use of the same schema at the end of the upgrade. Using these exact steps, we can do IR PROD to IR SUP. When you get to the end of SP3, do an export of IR SUP, and transfer it to S3. Then go to PROD system and import the schema. Everything else is already setup in production. We just get the latest data next week and bring it to non-prod. Instead of doing a straight import, you just drop IR_SUP.
+> Import into UAT, being used as an upgrade schema, upgrade shortcuts already created for QGAO. Being used as an upgrade environment. Run the autopatcher. Upgrade from SP11 to SP15, do the migration bits. Then the schema is already sitting there. Then we do the v36 build, GA, SP 1, 2 and 3. Technically we can make use of the same schema at the end of the upgrade. Using these exact steps, we can do IR PROD to IR SUP. When you get to the end of SP3, do an export of IR SUP, and transfer it to S3. Then go to PROD system and import the schema. Everything else is already setup in production. We just get the latest data next week and bring it to non-prod. Instead of doing a straight import, you just drop IR_SUP.
+{: .prompt-info }
+
 
 ### Download DMP Files
 
@@ -471,7 +473,7 @@ $UROUTER2			ORA:syda-nprod-dbu|inlandrail_<env>|xxxxxxxxxxx
 C:\temp\v35-releases\9.7.35-SP15\PATCHSOFTWARE\SIGS
 ```
 
-- These files will need to go into `08. XML` shortcut directory after removing all files found there
+- These files will need to go into  shortcut directory after removing all files found there
 
 ```powershell
 # remove existing XML files from target path
@@ -496,7 +498,9 @@ C:\temp\v35-releases\9.7.35-SP15\PATCHSOFTWARE\Manii
 ```
 
 - These files will need to go into `00. Manii` shortcut replacing any files that exist in the target path being overwritten _(average 20 files)_
-- **Note:** Needs to be run in the admin console
+
+> Needs to be run in the admin console
+{: .prompt-warning }
 
 ```powershell
 # copy and replace all files recursively to target from source
@@ -506,6 +510,9 @@ Copy-Item -Path C:\temp\v35-releases\9.7.35-SP15\PATCHSOFTWARE\Manii\ -Destinati
 ## Auto Patcher
 
 ### Loading Defaults
+
+> Administrative elevation required in this step
+{: .prompt-warning }
 
 - Open shortcut `01. Autopatcher` _(as an admin)_ and click on `Load Config` button
 - Navigate to the `QGAO_UPG` directory and select the `inlandrail_upg.patchconfig` file
@@ -616,10 +623,13 @@ Remove-Item -Path \\syda-n-fs\iwms\manhattan\xml\qgao_upg\*.xml -Force -Confirm:
 
 ### Export Uniface 9 Source
 
-- **Note:** Rebase on SP14 on maii's is required first to complete _(previous step)_
+> Rebase on SP14 on maii's is required first to complete _(previous step)_
+{: .prompt-warning }
+
+
 - Output file `client_usergrid.xml` is created in predefined `08. XML` folder, then copied to `C:\temp\Export Uniface 9 Source\client_usergrid.xml`
 - Open the `01. IDF` shortcut as user _(do not use admin)_
-- Execute the command `/rma /tst CSUTPCLIUGRID ` to export the client grid XML file
+- Execute the command `/rma /tst CSUTPCLIUGRID` to export the client grid XML file
 - Resulting window will close on it's own
 - File can be found at `\\syda-n-fs\iwms\manhattan\xml\qgao_upg\client_usergrid.xml`
 
@@ -713,7 +723,7 @@ _SQL Tools Execute Script_
   - `E:\manhattan\u103\common\bin\idf.exe /rma /asn=E:\manhattan\u103\uniface\adm\inlandrail_sup\idf.asm /ini=E:\manhattan\u103\uniface\adm\inlandrail_sup\inlandrail_sup.ini ?`
   - Re-create the shortcuts if they are incorrectly pointing to targets _(see steps above)_
 - Open the `01. IDF` shortcut as user _(do not use admin)_
-- Execute the command `/imp imp E:\upgrade\v35-v36\upgrade_exports\umeta.xml` to import the umeta XML file
+- Execute the command `/imp E:\upgrade\v35-v36\upgrade_exports\umeta.xml` to import the umeta XML file
 - Close the resulting window
 
 ### Overwrite v36 edc with v35
@@ -726,4 +736,60 @@ _SQL Tools Execute Script_
 Copy-Item -Path E:\manhattan\forms\manii_inlandrail_upg\edc -Destination E:\manhattan\forms\manii_inlandrail_sup\edc -Recurse -Force -Confirm:$false
 ```
 
-Video stopped at 4hr 40min to sleep
+### Import User Grid Source
+
+> Be careful to use the correct `client_usergrid.xml` file from earlier and it should be in the `08. XML` directory of the client
+{: .prompt-warning }
+
+- From step `/rma /tst CSUTPCLIUGRID` obtain `client_usergrid.xml` file
+- File can be found at `\\syda-n-fs\iwms\manhattan\xml\qgao_upg\client_usergrid.xml`
+- File should be moved to `\\syda-n-fs\iwms\manhattan\xml\inlandrail_sup\client_usergrid.xml` to use
+- Open the `01. IDF` shortcut as user _(do not use admin)_
+- Execute the command `/imp \\syda-n-fs\iwms\manhattan\xml\inlandrail_sup\client_usergrid.xml` to import the umeta XML file
+- Close the resulting window
+
+### Import 36 Grid Template Source
+
+- Verify path exists of generic `C:\temp\v35-36\upgrade_exports\36gridtemplate_source.xml` file
+- Open the `01. IDF` shortcut as user _(do not use admin)_
+- Execute the command `/imp C:\temp\v35-36\upgrade_exports\36gridtemplate_source.xml` to import the umeta XML file
+- Close the resulting window
+
+### Import 36 Grid Template Source
+
+- Verify path exists of generic `C:\temp\v35-36\upgrade_exports\36ntier_include_procs.xml` file
+- Open the `01. IDF` shortcut as user _(do not use admin)_
+- Execute the command `/imp C:\temp\v35-36\upgrade_exports\36ntier_include_procs.xml` to import the umeta XML file
+- Close the resulting window
+
+## Patchsoftware Update
+
+### Manii Data Files
+
+- Copy `C:\temp\9.7.36\36-SP3\PATCHSOFTWARE\manii` over to target area `E:\manhattan\forms\manii_inlandrail_sup`
+
+```powershell
+Copy-Item -Path C:\temp\9.7.36\36-SP1\PATCHSOFTWARE\manii\ -Destination E:\manhattan\forms\manii_inlandrail_sup -Recurse -Force -Confirm:$false
+```
+
+### Autopatch Builds
+
+> Administrative elevation required in this step
+{: .prompt-warning }
+
+- Open shortcut `01. Autopatch` _(as an admin)_ and click on `Load Config` button
+- Navigate to `E:\manhattan\u103\uniface\adm\inlandrail_sup\others` directory and select `inlandrail_sup.patchconfig` file
+- Verify the schema name _(Username)_ and Password in the middle section using the correct username and password for the environment
+- Click on `Validate Config` button to verify settings
+- Populate the `Patch Folder` with each path from `C:\temp\9.7.36` directory
+  - Patch with `C:\temp\9.7.36\36-BUILDS` directory
+  - Patch with `C:\temp\9.7.36\36-GA` directory
+  - Patch with `C:\temp\9.7.36\36-SP1` directory
+  - Patch with `C:\temp\9.7.36\36-SP2` directory
+  - Patch with `C:\temp\9.7.36\36-SP3` directory
+- Click on `Apply Patch` button to bring up patching interface
+- Verify the `Area`, `Patch` and `DB` values are correct
+- Click on `Next` button a few times to ensure the patches apply
+- Select `Use VBS` and `Auto Step` after a few passes and click on `Next` button to auto-process
+- Everytime the patching stops on `README` function, click on `Next` button to continue
+- Close the Auto Patcher window and confirm to exit
