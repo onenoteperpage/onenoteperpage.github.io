@@ -15,7 +15,7 @@ mermaid: true
 ```powershell
 if (-not (Test-Path -Path $PROFILE))
 {
-    New-Item -Path (Split-Path -Path $PROFILE -Parent) -Confirm:$false -Force
+    New-Item -Path (Split-Path -Path $PROFILE -Parent) -ItemType Directory -Confirm:$false -Force
     New-Item -Path $PROFILE -ItemType File -Confirm:$false -Force
     notepad $PROFILE
     . $PROFILE

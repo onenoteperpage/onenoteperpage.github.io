@@ -125,6 +125,28 @@ Get-Rule /cbaprod/*
   - Open `services.msc`
   - Stop process `Uniface Urouter CBAPROD`
 
+To automate the task, open PowerShell prompt and execute script:
+
+```powershell
+$servName = "Uniface Urouter CBAPROD"
+if ((Get-Service -Name $servName).Status -like "Running")
+{
+  Write-Host "Service [" -NoNewLine
+  Write-Host $servName -ForegroundColor Yellow -NoNewLine
+  Write-Host "] is " -NoNewLine
+  Write-Host "RUNNING" -ForegroundColor Red
+  #Get-Service -Name $servName | Stop-Service -Confirm:$false -Force
+}
+if ((Get-Service -Name $servName).Status -like "Stopped")
+{
+  Write-Host "Service [" -NoNewLine
+  Write-Host $servName -ForegroundColor Yellow -NoNewLine
+  Write-Host "] is " -NoNewLine
+  Write-Host "RUNNING" -ForegroundColor Red
+  Get-Service -Name $servName | Stop-Service -Confirm:$false -Force
+}
+```
+
 ### Stop Backup
 
 1. Log into SYDA-PSCHA03-CBA
@@ -145,7 +167,7 @@ _AWS Cloud Services Prod Console_
 1. Open RDS window _(Link: [https://ap-southeast-2.console.aws.amazon.com/rds/home?region=ap-southeast-2#](https://ap-southeast-2.console.aws.amazon.com/rds/home?region=ap-southeast-2#))_
 1. Select `rds-syda-p-ora03` database for CBAPROD environment
 1. From *Actions* button, select *Take snapshot* option
-1. Name snapshot with `&lt;ticket number&gt;-&lt;client environment&gt;-&lt;date&gt;-&lt;time&gt;` all in lowercase
+1. Name snapshot with `<ticket number>-<client environment>-<date>-<time>` all in lowercase
   - `ritm000xxxx-cbaprod-yyyyMMdd-HHmm`
 
 ## Step 5: Lockout and Logout Users
