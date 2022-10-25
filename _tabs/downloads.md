@@ -6,4 +6,4 @@ order: 6
 
 - [OpenVPN Connect](/downloads/openvpn.html)
 - [Putty](/downloads/putty.html)
-- [Notepad++](/downloads/notepad-plus-plus.md)
+- [Notepad++](/downloads/notepad-plus-plus.html)
