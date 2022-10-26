@@ -1,7 +1,7 @@
 ---
 title: InlandRail V35 to V36 Upgrade
 author: danijel
-date: 2022-10-21 11:00:00 +1000
+date: 2022-10-25 11:00:00 +1000
 categories: [Reference, Server Config]
 tags: [ir]
 math: true
