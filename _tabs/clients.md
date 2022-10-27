@@ -6,14 +6,14 @@ order: 2
 
 | Client | Code | Alt Name | Info |
 |:-------|:-----|:---------|:-----|
-| Macquarie Bank | <span style="color:red">_?_</span> | - | - |
+| Macquarie Bank | MQB | - | - |
 | Commonwealth Bank | CBA | CommBank | - |
 | Inland Rail | IR | - | - |
 | Queensland Govt | QGAO | - | - |
 | Vodafone Hutchinson Australia | VHA | - | - |
 | Harvey Norman | VHA | - | - |
 | Australian Government Solicitor | AGS | - | - |
-| Citibank | <span style="color:red">_?_</span> | - | - |
-| eBay | <span style="color:red">_?_</span> | - | - |
-| JLR | <span style="color:red">_?_</span> | - | - |
+| Citibank | CITI | - | - |
+| eBay | EBAY | - | - |
+| Jaguar Land Rover | JLR | - | - |
 | Bookfield | BGIS | - | - |
