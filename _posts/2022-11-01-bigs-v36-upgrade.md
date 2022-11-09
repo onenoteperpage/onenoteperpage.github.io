@@ -15,9 +15,6 @@ image:
 
 Process to upgrade BGIS v35 (legacy prod) to v36 (new prod) using in-situ upgrade per Veera's instructions.
 
-<!-- > Requires AWS PowerShell credentials from web console via OKTA -->
-<!-- {: .prompt-info } -->
-
 ## Connection Info
 
 | Server | IP Address | Service |
@@ -26,13 +23,14 @@ Process to upgrade BGIS v35 (legacy prod) to v36 (new prod) using in-situ upgrad
 | NWEB2 | _?_ | Non-Prod Web 2 |
 | NAPP | 172.16.1.100 | Non-Prod Application |
 | NSCH | 172.16.1.101 | Non-Prod Scheduler |
-| PWEB1 | _?_ | Production Web |
-| PWEB2 | _?_ | Production Web 2 |
-| PAPP11 | _?_ | Production Application 11 |
-| PAPP22 | _?_ | Production Application 22 |
-| PAPP33 | _?_ | Production Application 33 |
-| PSCH11 | _?_ | Production Scheduler 11 |
-| PSCH22 | _?_ | Production Scheduler 22
+| vPRODWEB01 | 192.168.10.20 | Prod Web |
+| vPRODAPP01 | 172.16.1.120 | Prod App 1 |
+| vPRODAPP02 | 172.16.1.121 | Prod App 2 |
+| vPRODAPP03 | 172.16.1.122 | Prod App 3 |
+| vPRODSC01 | 172.16.1.123 | Prod Scheduler 1 |
+| vPRODSC02 | 172.16.1.124 | Prod Scheduler 2 |
+
+**VPN Service:** FortiClient VPN provided by BGIS
 
 ## Background Information
 
@@ -242,8 +240,7 @@ _TRUNCATE TABLE FINRPTSTAT and import file given by Neil using IDF_
 - Execute command
 
 ```sql
-SQL> TRUNCATE TABLE FINRPTSTAT
-  2  /
+SQL> TRUNCATE TABLE FINRPTSTAT;
 
 Table truncated.
 ```
@@ -291,9 +288,6 @@ Copy-Item -Path "D:\Manhattan\upgrade\9.7.35-SP15_Manii\Manii" -Destination "D:\
 
 - Open **SQLTools** and connect to BGISUAT04 environment
 - Run the following SQL command as schema user to clear ULANA
-
-> Veera - what is "as schema user" ?
-{: .prompt-danger }
 
 ```sql
 DELETE FROM ulana WHERE u_var IN ('UDTD','USERVICE');
@@ -468,8 +462,18 @@ _Copy EDC files into manii, and copy webroot prepared from UAT06_
 
 <button type="button" class="btn btn-secondary position-relative">Veera</button>
 
-> Veera - where is the infomration for this step?
-{: .prompt-danger }
+ 
+
+Copy EDC folder from E:\Manhattan\versions\BGISPROD\Manii to E:\Manhattan\versions\bgis_prod\manii 
+ 
+
+Delete the bgisprod folder from E:\Manhattan\tomcat\BGISPROD\webapps first, then 
+
+Copy bgisprod folder from E:\Manhattan\upgrade\36-SP3_uat06_Webroot to E:\Manhattan\tomcat\BGISPROD\webapps 
+
+ 
+
+Copy bgisprod_portal folder from E:\Manhattan\upgrade\36-SP3_uat06_Webroot to E:\Manhattan\tomcat\BGISPROD\webapps 
 
 ## 19: Import Umeta.xml
 
@@ -623,11 +627,6 @@ _Click on the Update button_
 - Check the logs at `D:\Manhattan\logs\BGISUAT04\idf` and search for the files by date/time
 - Rename the log File
 
-> Veera - the SQL command in the screen recording is missing here? ts7:15:17
-{: .prompt-danger }
-
-![Desktop View](/assets/img/2022-11-01/20221101-26-03.PNG){: width="819" height="804" }
-_This SQL is missing?_
 
 ## 27: Compile and Enable triggers
 
@@ -646,13 +645,6 @@ _Compile then Enable the triggers_
 > Actioned by  Naeem
 {: .prompt-info }
 
-## Update the pre-req tool with the new version
-
-> Veera - did this through the Engineering portal on trimble RDWeb
-{: .prompt-danger }
-
-> Veera - this is now missing from the run sheet?
-{: .prompt-danger }
 
 ## 28: Execute Row Count to PROD_END_COUNT.txt
 
@@ -736,15 +728,6 @@ SQL> SELECT * FROM def_params WHERE dp_ref= 'IMAGE_WEBFOLDER';
 SQL> UPDATE def_params SET dp_vc255 = 'https://test.apac.bgis.com/bgisuat04/generic/images/userimages/' WHERE dp_ref= 'IMAGE_WEBFOLDER';;
 ```
 
-## ~~Copy shortcuts folder to all other app / scheduler servers~~
-
-> Veera - this is now missing from the run sheet?
-{: .prompt-danger }
-
-## ~~Create the urouter service on all appservers~~
-
-> Veera - this is now missing from the run sheet?
-{: .prompt-danger }
 
 ## 34: Run compile.sql a few times to compile DB objects
 
@@ -823,12 +806,12 @@ _There is no info for this step_
 {: .prompt-warning }
 
 - Enable the Scheduler services using this exact order
-- PSCH11 actioned first
-- PSCH22 actioned second
+- vPRODSC01 actioned first, in order, do not enable the other 3 services even though they are visible
+- PSCH22 actioned second, in order, do not enable the other 4 services even though they are visible
 
 | Server | IP Address | Service 1 | Service 2 | Service 3 | Service 4 |
 |:-------|:-----------|:----------|:----------|:----------|:----------|
-| PSCH11 | 172.16.1.123 | BATCHPOST01 | BATCHPOST02 | BATCHRUN | SCHEDULE |
+| vPRODSC01 | 172.16.1.123 | BATCHPOST01 | BATCHPOST02 | BATCHRUN | SCHEDULE |
 | PSCH22 | 172.16.1.124 | EMAILNOTIF | WOCOMPLETE | WORKORDERS |
 
 
@@ -945,7 +928,7 @@ mkdir -p D:\Manhattan\upgrade\upgrade_exports
 - Rename the log file
 
 
-> Veera - at step 22: Import Uniface 10 Grid Template Source, there is a 3rd line `/rma /imp D:\Manhattan\upgrade\upgrade_exports\gridtemplate_source.xml`
+> At step 22, there is a command to Import Uniface 10 Grid Template Source, there is a 3rd line `/rma /imp D:\Manhattan\upgrade\upgrade_exports\gridtemplate_source.xml` <- do not do this!
 {: .prompt-danger }
 
 ### /con uview
@@ -986,8 +969,6 @@ _Invalid Objects_
 
 ## 44: Drop and create index ACTIVITY_F1
 
-<button type="button" class="btn btn-info position-relative">Danijel</button>
-
 _Drop and create index ACTIVITY_F1 , CREATE index ORDERH_
 
 <button type="button" class="btn btn-info position-relative">Danijel</button>
@@ -1015,7 +996,7 @@ SQL> @"E:\Manhattan\upgrade\sql\create_ORDERH_index.txt"
 - Check the _Start Date_ and _Start Time_ are current
 - In the navigation pane, select the path `Reporting > Reports > Test Report`
 - Select `Standard Report` from the drop down
-- Click on _Generate_ report and if report generates, the Java is the correct version and hte PDF will be generated
+- Click on _Generate_ report and if report generates, the Java is the correct version and the PDF will be generated
 - Take note of the Area Name and Version info
 - Launch a Manhattan User Grid
 - Launch a Manhattan Grid
