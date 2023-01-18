@@ -7,13 +7,21 @@ tags: [cli, manhattan]
 mermaid: true
 comments: false
 image:
-  path: /assets/img/logos/apache_tomcat_windows.png
-  width: 640
-  height: 360
-  alt: Apache Tomcat Windows
+  path: /assets/img/logos/share-files.png
+  width: 680
+  height: 371
+  alt: Sharing files
 ---
 Location of all files associated with logs and stuff.
 
 ## Tomcat Logs
 
 `E:\Manhattan\Tomcat\<ENV>\logs\localhost_access_log.yyyy-MM-dd.txt`
+
+
+## CBA Schedulers (v35)
+
+Only found on **SYDA-PSCHA03-CBA** server
+
+`E:\Manhattan\Shortcuts\schedmon\schedulers.list.txt`
+
