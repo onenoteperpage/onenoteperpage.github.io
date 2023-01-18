@@ -6,6 +6,11 @@ categories: [Reference, Server Config]
 tags: [cba]
 mermaid: true
 comments: false
+image:
+  path: /assets/img/post-headers/commbank.jpg
+  width: 800
+  height: 280
+  alt: Commbank Logo
 ---
 Commonwealth Bank (CBA) offers personal banking, business solutions, institutional banking, company information, and more.
 
