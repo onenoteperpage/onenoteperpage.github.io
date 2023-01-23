@@ -1,0 +1,7 @@
+PS E:\> E:\Manhattan\uniface9704\common\bin\urouter.exe /show="Uniface Urouter CBAPROD"
+Parameters of service 'Uniface Urouter CBAPROD':
+  /asn=E:\Manhattan\uniface9704\common\adm\urouter_cbaprod.asn
+
+
+
+urouter /show="name of urouter in services"
