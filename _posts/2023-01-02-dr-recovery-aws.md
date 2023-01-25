@@ -15,6 +15,7 @@ image:
 Using Terraform, we are able to restore our DR services to active.
 
 ## Required
+
 1. Terraform _(installed)_
 1. S3 CLI _(installed)_
 1. IWMS Terraform DR Folder _(from S3 bucket)_
