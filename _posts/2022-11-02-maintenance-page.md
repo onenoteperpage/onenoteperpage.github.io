@@ -13,7 +13,7 @@ image:
   alt: Share Files
 ---
 
-Set or clear the maintnence page when applying patches to Manhattan products on PROD/Non-Prod environments.
+Set or clear the maintnence page when applying patches to Manhattan products on PROD/Non-Prod environments so customers do not access the portal in the interim.
 
 ## Required
 
@@ -22,6 +22,38 @@ Set or clear the maintnence page when applying patches to Manhattan products on 
 1. AWSPowerShell.NetCore module installed _(PowerShell Core)_
 
 ## Setup/Config
+
+### PowerShell Profile
+
+Ensure code is loaded into the PowerShell profile:
+
+```powershell
+$env:AWS_CLI_AUTO_PROMPT='off'
+$Env:AWS_PROFILELOCATION="$home\.aws\credentials"
+
+$Env:AWS_CSM_ENABLED=$true
+$Env:AWS_CSM_PORT=31000
+$Env:AWS_CSM_HOST=127.0.0.1
+
+function stc
+{
+	param($pf)
+	$Env:AWS_ACCESS_KEY_ID 
+
+	Set-AWSCredentials -AccessKey $Env:AWS_ACCESS_KEY_ID -SecretKey $Env:AWS_SECRET_ACCESS_KEY -SessionToken $Env:AWS_SESSION_TOKEN -StoreAs $pf -ProfileLocation $Env:AWS_PROFILELOCATION
+}
+
+function sac
+{
+	param($pf)
+	$Env:AWS_PROFILE=$pf
+	Set-AWSCredential -ProfileName $pf -ProfileLocation $env:AWS_PROFILELOCATION
+	$Cred=Get-AWSCredential -ProfileName $pf -ProfileLocation $env:AWS_PROFILELOCATION
+	$Env:AWS_ACCESS_KEY_ID=$cred.GetCredentials().AccessKey
+	$Env:AWS_SECRET_ACCESS_KEY=$cred.GetCredentials().SecretKey
+	$Env:AWS_SESSION_TOKEN=$cred.GetCredentials().Token
+}
+```
 
 ### AWS CLI
 
@@ -32,7 +64,7 @@ Set or clear the maintnence page when applying patches to Manhattan products on 
   - Alternatively use `msiexec` to install MSI file directly:
 
   ```powershell
-  msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi
+  msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi /qn
   ```
 
 > Where a service has **O19** in the name, is v35 after the Oracle 19 upgrade. Otherwise is v35 prior to Oracle 19.

@@ -25,3 +25,9 @@ Only found on **SYDA-PSCHA03-CBA** server
 
 `E:\Manhattan\Shortcuts\schedmon\schedulers.list.txt`
 
+
+## SQL Re-Grant Scripts
+
+Only found on **APPa** or **APP1** servers:
+
+`E:\Manhattan\versions\Clients\<CLIENT>\re-grant.txt`
