@@ -1,8 +1,8 @@
 ---
-title: Patching E2E
+title: Patching E2E CBA (Old Stack)
 author: danijel
 date: 2022-12-01 11:00:00 +1000
-categories: [Reference]
+categories: [Process, Patching]
 tags: [reference]
 math: true
 mermaid: true
@@ -13,7 +13,7 @@ mermaid: true
 #   alt: BGIS Logo
 ---
 
-Process to patch, end to end.
+Process to patch, end to end. Targes CBA Old Stack only.
 
 ## Process Simplified
 

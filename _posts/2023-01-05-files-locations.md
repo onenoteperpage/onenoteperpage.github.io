@@ -12,6 +12,7 @@ image:
   height: 371
   alt: Sharing files
 ---
+
 Location of all files associated with logs and stuff.
 
 ## Tomcat Logs
