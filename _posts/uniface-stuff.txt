@@ -5,3 +5,10 @@ Parameters of service 'Uniface Urouter CBAPROD':
 
 
 urouter /show="name of urouter in services"
+
+
+
+
+
+QGAO Training Post Import Script:
+E:\manhattan\u103\uniface\adm\qgao_trn\others\QGAO_TRN_POST_IMPORT_SCRIPT.txt

@@ -46,3 +46,6 @@ Packaging SPR using Pre-Req tool for Manhattan release.
 1. Click on the **green tick** button _(green)_ to accept
 
 ![prereq tool 02](/assets/img/2023/02/11/prereq-02.png){: width="736" heigh="307" }
+
+1. Click on the **Pre-Req** button to start pre-requsition process
+
